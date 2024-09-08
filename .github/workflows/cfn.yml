@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "cfn/**"
+  workflow_dispatch:
 
 permissions:
   id-token: write # This is required for requesting the JWT  
@@ -27,4 +28,4 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
             name: seed-job-ddb
-            template: cfn/dynamodb.yaml
+            template: cfn/dynamodb.yml

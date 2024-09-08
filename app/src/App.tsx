@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { MainRoutes } from "./MainRoutes";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  createHashRouter,
+} from "react-router-dom";
 import { AuthProvider, AuthProviderProps, useAuth } from "react-oidc-context";
 import Loading from "./components/Loading";
 import { User, WebStorageStateStore } from "oidc-client-ts";
@@ -9,6 +13,7 @@ import UserProvider from "./UserProvider";
 import LoginPage from "./components/LoginPage";
 
 const onSigninCallback = (_user: User | void): void => {
+  console.log("onSigninCallback");
   window.history.replaceState({}, document.title, window.location.pathname);
 };
 
@@ -31,28 +36,33 @@ const oidcConfig = {
   },
 } as AuthProviderProps;
 
+const router = createBrowserRouter(MainRoutes);
+
 function AuthApp() {
   const auth = useAuth();
+  console.log("auth", auth);
+  console.log(document.cookie);
+
   useEffect(() => {
     return auth.events.addAccessTokenExpiring(() => {
       auth.signinSilent();
     });
   }, [auth.events, auth.signinSilent]);
 
-  if (auth.isLoading) {
-    return <Loading />;
-  }
   if (auth.error) {
     return <div>Oops... {auth.error.message}</div>;
   }
   if (auth.isAuthenticated) {
     return (
       <UserProvider>
-        <RouterProvider router={createBrowserRouter(MainRoutes)} />
+        <RouterProvider router={router} />
       </UserProvider>
     );
   }
-
+  if (auth.isLoading) {
+    return <Loading />;
+  }
+  console.log("not authenticated");
   return <LoginPage />;
 }
 

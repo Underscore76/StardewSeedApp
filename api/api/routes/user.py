@@ -7,15 +7,23 @@ router = APIRouter(
 )
 
 
-@router.post("/token")
-def login(response: Response, hashed_user_id: str = Depends(get_discord_user)):
+def set_cookie(response: Response, key: str, value: str | None):
+    if value is None:
+        response.delete_cookie(key=key)
+        return
     response.set_cookie(
-        key="user_id",
-        value=hashed_user_id,
+        key=key,
+        value=value,
         secure=True,
         samesite="strict",
         httponly=True,
     )
+
+
+@router.post("/token")
+def login(response: Response, user: tuple[str, str] = Depends(get_discord_user)):
+    set_cookie(response, "user_id", user[0])
+    set_cookie(response, "user_hash", user[1])
     response.status_code = 200
     return response
 
@@ -27,6 +35,7 @@ def check_user(user_id: str = Depends(get_cookie_user)):
 
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie(key="user_id")
+    set_cookie(response, "user_id", None)
+    set_cookie(response, "user_hash", None)
     response.status_code = 200
     return response

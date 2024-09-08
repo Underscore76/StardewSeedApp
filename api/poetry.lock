@@ -110,6 +110,7 @@ mypy-boto3-lambda = {version = ">=1.35.0,<1.36.0", optional = true, markers = "e
 mypy-boto3-rds = {version = ">=1.35.0,<1.36.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-s3 = {version = ">=1.35.0,<1.36.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-sqs = {version = ">=1.35.0,<1.36.0", optional = true, markers = "extra == \"essential\""}
+mypy-boto3-ssm = {version = ">=1.35.0,<1.36.0", optional = true, markers = "extra == \"ssm\""}
 types-s3transfer = "*"
 
 [package.extras]
@@ -980,6 +981,17 @@ files = [
 ]
 
 [[package]]
+name = "mypy-boto3-ssm"
+version = "1.35.0"
+description = "Type annotations for boto3.SSM 1.35.0 service generated with mypy-boto3-builder 7.26.0"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "mypy_boto3_ssm-1.35.0-py3-none-any.whl", hash = "sha256:ee4bfdf91e7e59d556c172d1de8898cb8fd05893be089ac59a1d69a406d45b55"},
+    {file = "mypy_boto3_ssm-1.35.0.tar.gz", hash = "sha256:d3bc98ee5cc4da149a4ef210094f985a84c4d4f7a7c499ec5c6b041df27a1097"},
+]
+
+[[package]]
 name = "pydantic"
 version = "2.9.0"
 description = "Data validation using Python type hints"
@@ -1646,4 +1658,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "60bf3181fcb6a008c4b5c7a4eb49e71d1467d9a702647cac4d3c2f2446076838"
+content-hash = "89353d7bf99bd26bd25c9c01a5b62af01d9fa8f55df157d03c8cc69197cc8808"

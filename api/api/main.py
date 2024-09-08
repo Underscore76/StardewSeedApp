@@ -2,6 +2,7 @@ from typing import Union
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from api.routes import job
 from api.routes import user
 
 app = FastAPI()
@@ -20,6 +21,7 @@ app.add_middleware(
 )
 
 app.include_router(user.router)
+app.include_router(job.router)
 
 
 @app.get("/")

@@ -2,12 +2,6 @@ import { useEffect, useState, createContext, useContext } from "react";
 import { useAuth } from "react-oidc-context";
 import Loading from "./components/Loading";
 
-type User = {
-  id: string;
-  username: string;
-  avatar: string;
-};
-
 const UserContext = createContext<User>(undefined);
 
 export default function UserProvider({
@@ -32,7 +26,7 @@ export default function UserProvider({
         } as User);
 
         // ensure the session cookie is valid
-        const res = await fetch("http://localhost:8000/user/token", {
+        await fetch("http://localhost:8000/user/token", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

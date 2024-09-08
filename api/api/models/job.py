@@ -12,14 +12,6 @@ class JobStatus(str, enum.Enum):
     failed = "failed"
 
 
-class User(BaseModel):
-    user_id: str
-    job_id: str = "meta"
-    username: str
-    avatar: str
-    global_name: str
-
-
 class JobRequest(BaseModel):
     start_seed: int = Field(default=0)
     end_seed: int = Field(default=100_000)
@@ -41,7 +33,6 @@ class Job(BaseModel):
 
     job_id: Optional[str] = None
     job_hash: Optional[str] = None
-    share_id: Optional[str] = None
 
     def __init__(self, **data):
         if "job_hash" not in data:
@@ -51,9 +42,7 @@ class Job(BaseModel):
             ).hexdigest()
         if "start_time" not in data:
             data["start_time"] = current_timestamp()
-        data["share_id"] = data["job_hash"][:8]
-
-        data["job_id"] = "#".join(["job", data["start_time"], data["share_id"]])
+        data["job_id"] = data["job_hash"][:8]
         super().__init__(**data)
 
 

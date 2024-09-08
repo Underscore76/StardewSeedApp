@@ -1,0 +1,48 @@
+Resources:
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+        - AttributeName: job_id
+          AttributeType: S
+        - AttributeName: job_hash
+          AttributeType: S
+        - AttributeName: share_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+        - AttributeName: job_id
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: share
+          Projection:
+            ProjectionType: ALL
+          KeySchema:
+            - AttributeName: user_id
+              KeyType: HASH
+            - AttributeName: share_id
+              KeyType: RANGE
+        - IndexName: job_hash
+          Projection:
+            ProjectionType: ALL
+          KeySchema:
+            - AttributeName: job_hash
+              KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+Outputs:
+  DynamoDBTableName:
+    Value: !Ref DynamoDBTable
+    Export:
+      Name: !Sub "${AWS::StackName}:TableName"
+  DynamoDBTableArn:
+    Value: !GetAtt DynamoDBTable.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}:TableArn"

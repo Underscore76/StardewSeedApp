@@ -1,8 +1,10 @@
-name: AWS OIDC example
+name: deploy cfn resources
 
 on:
   push:
     branches: ["main"]
+    paths:
+      - "cfn/**"
 
 permissions:
   id-token: write # This is required for requesting the JWT  
@@ -21,6 +23,8 @@ jobs:
           role-session-name: github-action-role
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Verification step
-        run: |
-          aws s3 ls
+      - name: deploy database
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+            name: seed-job-ddb
+            template: cfn/dynamodb.yaml

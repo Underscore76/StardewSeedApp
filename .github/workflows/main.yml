@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   deploy:
-    name: Assume AWS role
+    name: Deploy App
     runs-on: ubuntu-latest
 
     steps:

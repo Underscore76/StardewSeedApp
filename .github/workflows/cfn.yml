@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   deploy:
-    name: Assume AWS role
+    name: Deploy AWS base resources
     runs-on: ubuntu-latest
 
     steps:
@@ -31,3 +31,5 @@ jobs:
             name: seed-job-ddb
             template: cfn/dynamodb.yml
             no-fail-on-empty-changeset: "1"
+            tags: |
+              "seed-job-ddb"

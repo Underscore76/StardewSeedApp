@@ -1,9 +1,11 @@
+
 Resources:
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
+      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: user_id
           AttributeType: S
@@ -33,9 +35,6 @@ Resources:
           KeySchema:
             - AttributeName: job_hash
               KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
 
 Outputs:
   DynamoDBTableName:

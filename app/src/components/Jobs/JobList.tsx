@@ -21,7 +21,7 @@ export default function JobList(props: JobListProps) {
     <>
       <ul
         role="list"
-        className="divide-y divide-gray-100 overflow-hidden bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl"
+        className="min-h-96 divide-y divide-gray-100 overflow-hidden bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl"
       >
         {jobs.map((job) => (
           <JobListItem

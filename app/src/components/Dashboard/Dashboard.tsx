@@ -1,11 +1,20 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useMatches } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useAuth } from "react-oidc-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-  const auth = useAuth();
   const [pageName, setPageName] = useState("Dashboard");
+  const matches = useMatches();
+  const { handle, data }: { handle: any; data: any } =
+    matches[matches.length - 1];
+  const title = handle && handle.title(data);
+
+  useEffect(() => {
+    if (title) {
+      document.title = title;
+    }
+  }, [title]);
   return (
     <div className="max-h-screen">
       <Navbar />

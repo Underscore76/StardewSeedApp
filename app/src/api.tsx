@@ -42,3 +42,16 @@ export async function updateCookies(token: string): Promise<void> {
     credentials: "include",
   });
 }
+
+export async function listJobs(): Promise<Job[]> {
+  const response = await fetch("http://localhost:8000/job", {
+    credentials: "include",
+  });
+  const data = await response.json();
+  return data.sort((a, b) => {
+    if (a.start_time === b.start_time) {
+      return 0;
+    }
+    return a.start_time < b.start_time ? 1 : -1;
+  });
+}

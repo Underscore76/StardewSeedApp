@@ -46,11 +46,8 @@ def get_job_by_id(user_id: str, job_id: str) -> Job | None:
 
 def get_user_jobs(user_id: str) -> list[Job]:
     table = _get_table()
-    response = table.query(
-        KeyConditionExpression=Key("user_id").eq(user_id)
-        & Key("job_id").begins_with("job#"),
-    )
-    return [Job(**r) for r in response["Items"]]
+    response = table.query(KeyConditionExpression=Key("user_id").eq(user_id))
+    return [Job(**r) for r in response["Items"] if r["job_id"] != "meta"]
 
 
 def get_user_meta(user_id: str) -> User | None:

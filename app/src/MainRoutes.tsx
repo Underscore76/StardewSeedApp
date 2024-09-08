@@ -13,21 +13,33 @@ export const MainRoutes = [
         path: "",
         element: <Home />,
         loader: listJobs,
+        handle: {
+          title: () => "SeedFinder - Home",
+        },
       },
       {
         path: "create",
         element: <CreateView />,
         action: createJob,
+        handle: {
+          title: () => "SeedFinder - Create",
+        },
       },
       {
         path: "job/:jobId",
         element: <JobView />,
         loader: jobLoader,
+        handle: {
+          title: (data) => `SeedFinder - Job: ${data.job_id}`,
+        },
       },
       {
         path: "shared/:shareId",
         element: <ShareView />,
         loader: shareLoader,
+        handle: {
+          title: (data) => `SeedFinder - Shared: ${data.job_id}`,
+        },
       },
     ],
   },

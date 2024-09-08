@@ -6,18 +6,11 @@ import {
 import { useUser } from "../UserProvider";
 import { useEffect } from "react";
 import JobCard from "../components/Jobs/JobCard";
+import { listJobs } from "../api";
 
 export async function loader(): Promise<Job[]> {
-  const response = await fetch("http://localhost:8000/job", {
-    credentials: "include",
-  });
-  const data = (await response.json()) as Job[];
-  return data.sort((a, b) => {
-    if (a.start_time === b.start_time) {
-      return 0;
-    }
-    return a.start_time < b.start_time ? 1 : -1;
-  });
+  const data = await listJobs();
+  return data;
 }
 
 export default function Home() {

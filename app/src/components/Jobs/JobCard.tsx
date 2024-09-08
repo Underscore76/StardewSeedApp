@@ -24,7 +24,12 @@ function CardButtons() {
 export default function JobCard(props: JobCardProps) {
   return (
     <Card title="Jobs" buttons={CardButtons()}>
-      <JobList jobs={props.jobs} onDeleteJob={props.onDelete} />
+      {props.jobs.length === 0 && (
+        <p className="text-center text-gray-500">No jobs found</p>
+      )}
+      {props.jobs.length > 0 && (
+        <JobList jobs={props.jobs} onDeleteJob={props.onDelete} />
+      )}
     </Card>
   );
 }

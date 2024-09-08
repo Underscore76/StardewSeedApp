@@ -19,10 +19,11 @@ export async function loader({ params }) {
 export default function ShareView() {
   const data = useLoaderData() as SharedJob;
   const setPageName = useOutletContext() as OutletContext;
-  useEffect(() => setPageName("Create Job"));
+  useEffect(() =>
+    setPageName(`Shared by ${data.user.global_name} (${data.user.username})`),
+  );
   return (
     <div>
-      <h2>{`Shared by ${data.user.global_name} (${data.user.username})`}</h2>
       <JobItem job={data.job} />
     </div>
   );

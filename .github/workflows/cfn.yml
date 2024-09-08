@@ -31,5 +31,3 @@ jobs:
             name: seed-job-ddb
             template: cfn/dynamodb.yml
             no-fail-on-empty-changeset: "1"
-            tags: |
-              "seed-job-ddb"

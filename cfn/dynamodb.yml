@@ -35,13 +35,32 @@ Resources:
           KeySchema:
             - AttributeName: job_hash
               KeyType: HASH
+      Tags:
+        - Key: project
+          Value: seed-find
+
+  TableNameParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /seed-job-ddb/table-name
+      Type: String
+      Value: !Ref DynamoDBTable
+      Description: The name of the DynamoDB table
+      Tags:
+        project: seed-find
+
+  TableArnParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /seed-job-ddb/table-arn
+      Type: String
+      Value: !GetAtt DynamoDBTable.Arn
+      Description: The ARN of the DynamoDB table
+      Tags:
+        project: seed-find
 
 Outputs:
-  DynamoDBTableName:
-    Value: !Ref DynamoDBTable
-    Export:
-      Name: !Sub "${AWS::StackName}:TableName"
-  DynamoDBTableArn:
+  TableArn:
     Value: !GetAtt DynamoDBTable.Arn
-    Export:
-      Name: !Sub "${AWS::StackName}:TableArn"
+  TableName:
+    Value: !Ref DynamoDBTable

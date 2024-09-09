@@ -18,7 +18,7 @@ This project is a standalone web application for searching for seeds in Stardew 
 * Basic concept of job sharing (by passing `user_id.job_id`)
 
 ## TODO:
-* Build basic .NET container to run a json file as a seed search
+* [X] Build basic .NET container to run a json file as a seed search
 * Deploy API to AWS Lambda behind API Gateway
     * [ ] dockerize the FastAPI app with Mangum
     * [ ] ECR for container image

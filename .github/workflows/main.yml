@@ -33,7 +33,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
             name: seed-api-ecr
-            template: cfn/ecr.yml
+            template: ${{ env.working-directory }}/cfn/ecr.yml
             no-fail-on-empty-changeset: "1"
 
       - name: Login to Amazon ECR
@@ -41,6 +41,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push docker image to Amazon ECR
+        working-directory: ${{ env.working-directory }}
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ steps.deploy-ecr.outputs.repository }}

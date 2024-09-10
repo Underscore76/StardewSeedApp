@@ -60,8 +60,6 @@ Resources:
       ImageUri: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}:${ImageTag}
       Environment: 
         Variables:
-          DOMAIN_NAME: '{{resolve:ssm:/route53/hostedzone/name}}'
-          TABLE_NAME: '{{resolve:ssm:/seed-job-ddb/table-name}}'
           SECRET_ARN: !Ref AppSecret
       Events:
         HttpApi:
@@ -96,6 +94,12 @@ Resources:
                   - dynamodb:*
                 Resource:
                   - '{{resolve:ssm:/seed-job-ddb/table-arn}}'
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                Resource: 
+                  - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/seed-job-ddb/table-name'
+                  - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/route53/hostedzone/name'
               - Effect: Allow
                 Action:
                   - secretsmanager:GetSecretValue

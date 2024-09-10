@@ -22,16 +22,12 @@ def serialize_number(number: str) -> Union[float, int]:
 setattr(TypeDeserializer, "_deserialize_n", lambda _, number: serialize_number(number))
 
 
-@cache
-def _get_table_name() -> str:
-    return os.environ.get(
-        "TABLE_NAME", _get_ssm_param_value("/seed-job-ddb/table-name")
-    )
+TABLE_NAME = _get_ssm_param_value("/seed-job-ddb/table-name")
 
 
 def _get_table(name: str | None = None):
     if name is None:
-        name = _get_table_name()
+        name = TABLE_NAME
     dynamodb = boto3.resource("dynamodb")
     return dynamodb.Table(name)
 

@@ -8,9 +8,7 @@ router = APIRouter(
     tags=["user"],
 )
 
-DOMAIN_NAME = os.environ.get(
-    "DOMAIN_NAME", _get_ssm_param_value("/route53/hostedzone/name")
-)
+DOMAIN_NAME = _get_ssm_param_value("/route53/hostedzone/name")
 
 
 def set_cookie(response: Response, key: str, value: str | None):

@@ -15,22 +15,12 @@ def set_cookie(request: Request, response: Response, key: str, value: str | None
     if value is None:
         response.delete_cookie(key=key)
         return
-    print(request.client.host)
-    if True:
-        response.set_cookie(
-            key=key,
-            value=value,
-            secure=False,
-            samesite="none",
-            httponly=False,
-            domain=DOMAIN_NAME,
-        )
-        return
+
     response.set_cookie(
         key=key,
         value=value,
         secure=True,
-        samesite="strict",
+        samesite="none",
         httponly=True,
         domain=DOMAIN_NAME,
     )

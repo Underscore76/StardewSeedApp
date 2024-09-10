@@ -2,12 +2,14 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
-  SubdomainName:
+  DomainName:
     Type: String
-    Default: seed-api
+    Default: seed-api.underscore76.net
   ImageTag:
     Type: String
-    Default: latest
+  Repository:
+    Type: String
+    Default: seed-api-ecr
 
 Globals:
   Function:
@@ -32,7 +34,7 @@ Resources:
         MaxAge: 300
       DisableExecuteApiEndpoint: true
       Domain: 
-        DomainName: !Sub ${SubdomainName}.{{resolve:ssm:/route53/hostedzone/name}}
+        DomainName: !Ref DomainName
         CertificateArn: '{{resolve:ssm:/route53/hostedzone/certificate}}'
         Route53:
           HostedZoneId: '{{resolve:ssm:/route53/hostedzone/id}}'
@@ -53,7 +55,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      ImageUri: !Sub '{{resolve:ssm:/seed-api/ecr}}:${{github.sha}}'
+      ImageUri: !Sub ${Repository}:${ImageTag}
       Events:
         HttpApi:
           Type: HttpApi

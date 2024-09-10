@@ -59,4 +59,5 @@ jobs:
             capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
             no-fail-on-empty-changeset: "1"
             parameter-overrides: >-
-              ImageTag=${{ github.sha }}
+              ImageTag=${{ github.sha }},
+              Repository=${{ steps.deploy-ecr.outputs.RepositoryName }}

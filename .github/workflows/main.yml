@@ -1,4 +1,4 @@
-name: AWS OIDC example
+name: Deploying application
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
     paths:
       - "app/**"
       - "api/**"
+  workflow_dispatch:
 
 permissions:
   id-token: write # This is required for requesting the JWT  

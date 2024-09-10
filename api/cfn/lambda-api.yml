@@ -61,7 +61,7 @@ Resources:
           Type: HttpApi
           Properties:
             ApiId: !Ref HttpAPI
-      Role: !Ref LambdaRole
+      Role: !GetAtt  LambdaRole.Arn
 
   LambdaRole:
     Type: AWS::IAM::Role

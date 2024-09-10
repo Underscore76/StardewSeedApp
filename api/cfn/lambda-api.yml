@@ -5,53 +5,99 @@ Parameters:
   SubdomainName:
     Type: String
     Default: seed-api
+  ImageTag:
+    Type: String
+    Default: latest
 
 Resources:
-
-  ECRRepository:
-    Type: AWS::ECR::Repository
+  HttpAPI:
+    Type: AWS::Serverless::HttpApi
     Properties:
-      RepositoryName: !Sub ${SubdomainName}-ecr
-      EmptyOnDelete: true
-      # LifecyclePolicy:
-      #   LifecyclePolicyText: |
-      #     {
-      #       "rules": [
-      #           {
-      #               "rulePriority": 1,
-      #               "description": "Expire images older than 7 days",
-      #               "selection": {
-      #                   "tagStatus": "untagged",
-      #                   "countType": "sinceImagePushed",
-      #                   "countUnit": "days",
-      #                   "countNumber": 7
-      #               },
-      #               "action": {
-      #                   "type": "expire"
-      #               }
-      #           }
-      #       ]
-      #     }
+      CorsConfiguration:
+        AllowCredentials: true
+        AllowHeaders:
+          - '*'
+        AllowMethods:
+          - '*'
+        AllowOrigins: 
+          - 'https://{{resolve:ssm:/route53/hostedzone/name}}'
+          - 'https://web.{{resolve:ssm:/route53/hostedzone/name}}'
+          - 'http://localhost:5173'
+        ExposeHeaders:
+          - '*'
+        MaxAge: 300
+      DisableExecuteApiEndpoint: true
+      Domain: 
+        DomainName: !Sub ${SubdomainName}.{{resolve:ssm:/route53/hostedzone/name}}
+        CertificateArn: '{{resolve:ssm:/route53/hostedzone/certificate}}'
+        Route53:
+          HostedZoneId: '{{resolve:ssm:/route53/hostedzone/id}}'
+  
+  AppSecret:
+    Type: AWS::SecretsManager::Secret
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Retain
+    Properties:
+      Name: seed-api-secret
+      Description: The secret for the app
+      GenerateSecretString:
+        SecretStringTemplate: '{}'
+        GenerateStringKey: "secret-key"
+        PasswordLength: 30
 
-  # HttpAPI:
-  #   Type: AWS::Serverless::HttpApi
-  #   Properties:
-  #     CorsConfiguration:
-  #       AllowCredentials: true
-  #       AllowHeaders:
-  #         - '*'
-  #       AllowMethods:
-  #         - '*'
-  #       AllowOrigins: 
-  #         - 'https://{{resolve:ssm:/route53/hostedzone/name}}'
-  #         - 'https://web.{{resolve:ssm:/route53/hostedzone/name}}'
-  #         - 'http://localhost:5173'
-  #       ExposeHeaders:
-  #         - '*'
-  #       MaxAge: 300
-  #     DisableExecuteApiEndpoint: true
-  #     Domain: 
-  #       DomainName: !Sub ${SubdomainName}.{{resolve:ssm:/route53/hostedzone/name}}
-  #       CertificateArn: '{{resolve:ssm:/route53/hostedzone/certificate}}'
-  #       Route53:
-  #         HostedZoneId: '{{resolve:ssm:/route53/hostedzone/id}}'
+  LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageUri: !Sub '{{resolve:ssm:/seed-api/ecr}}:${{github.sha}}'
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpAPI
+      Role: !Ref LambdaRole
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                Resource: 
+                  - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/seed-job-ddb/table-name'
+              - Effect: Allow
+                Action:
+                  - dynamodb:*
+                Resource:
+                  - '{{resolve:ssm:/seed-job-ddb/table-arn}}'
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource:
+                  - !Ref AppSecret
+  
+  GatewayInvokeLambdaPermissions:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: apigateway.amazonaws.com
+  

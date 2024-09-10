@@ -11,10 +11,12 @@ permissions:
   id-token: write # This is required for requesting the JWT  
 
 jobs:
-  deploy:
-    name: Deploy App
+  deploy-api:
+    name: Deploy Api
     runs-on: ubuntu-latest
-
+    env:
+      working-directory: api
+    
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -22,4 +24,28 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
           role-session-name: github-action-role
           aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: deploy ecr
+        id: deploy-ecr
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+            name: seed-api-ecr
+            template: cfn/ecr.yml
+            no-fail-on-empty-changeset: "1"
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ steps.deploy-ecr.outputs.repository }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 

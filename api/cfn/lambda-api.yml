@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  SubdomainName:
+    Type: String
+    Default: seed-api
+
+Resources:
+
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub ${SubdomainName}-ecr
+      EmptyOnDelete: true
+      # LifecyclePolicy:
+      #   LifecyclePolicyText: |
+      #     {
+      #       "rules": [
+      #           {
+      #               "rulePriority": 1,
+      #               "description": "Expire images older than 7 days",
+      #               "selection": {
+      #                   "tagStatus": "untagged",
+      #                   "countType": "sinceImagePushed",
+      #                   "countUnit": "days",
+      #                   "countNumber": 7
+      #               },
+      #               "action": {
+      #                   "type": "expire"
+      #               }
+      #           }
+      #       ]
+      #     }
+
+  # HttpAPI:
+  #   Type: AWS::Serverless::HttpApi
+  #   Properties:
+  #     CorsConfiguration:
+  #       AllowCredentials: true
+  #       AllowHeaders:
+  #         - '*'
+  #       AllowMethods:
+  #         - '*'
+  #       AllowOrigins: 
+  #         - 'https://{{resolve:ssm:/route53/hostedzone/name}}'
+  #         - 'https://web.{{resolve:ssm:/route53/hostedzone/name}}'
+  #         - 'http://localhost:5173'
+  #       ExposeHeaders:
+  #         - '*'
+  #       MaxAge: 300
+  #     DisableExecuteApiEndpoint: true
+  #     Domain: 
+  #       DomainName: !Sub ${SubdomainName}.{{resolve:ssm:/route53/hostedzone/name}}
+  #       CertificateArn: '{{resolve:ssm:/route53/hostedzone/certificate}}'
+  #       Route53:
+  #         HostedZoneId: '{{resolve:ssm:/route53/hostedzone/id}}'

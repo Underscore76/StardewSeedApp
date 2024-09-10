@@ -16,7 +16,13 @@ This project is a standalone web application for searching for seeds in Stardew 
 * (local) Basic FastAPI CRUD operations for working with deployed ddb table
 * (local) Frontend scaffold calling the local backend
 * Basic concept of job sharing (by passing `user_id.job_id`)
-* Want to continue looking at speed testing the api, the docs page is incredibly slow but the actual api seems fine
+* Want to continue looking at speed testing the api, the api feels incredibly slow at low memory (at 256 it's like 2-3s per request vs at 1024 it's like 650-800ms and 2048 it's like 450ms)
+    * localhost requests are slow as dirt also so probably need to dig into why that is
+    * cold starts are pretty bad but also the scale to 0 is nice
+    * I wonder if I'm just eating a ton of damage in start times?
+    * wonder how other languages/platforms handle this efficiently
+    * might've just been bcrypt being slow? moving from 12 to 4 rounds made a huge difference
+
 
 
 ## TODO:

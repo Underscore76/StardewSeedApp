@@ -13,7 +13,7 @@ Parameters:
 
 Globals:
   Function:
-    Timeout: 30
+    Timeout: 300
 
 Resources:
   HttpAPI:
@@ -58,6 +58,7 @@ Resources:
     Properties:
       PackageType: Image
       ImageUri: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}:${ImageTag}
+      MemorySize: 512 
       Environment: 
         Variables:
           SECRET_ARN: !Ref AppSecret

@@ -20,14 +20,15 @@ export default function UserProvider({
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
-        setUser({
-          id: data.id,
-          username: data.username,
-          avatar: `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`,
-        } as User);
 
         // ensure the session cookie is valid
-        await updateCookies(token);
+        await updateCookies(token).then(() => {
+          setUser({
+            id: data.id,
+            username: data.username,
+            avatar: `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`,
+          } as User);
+        });
       };
       fetchData(auth.user.access_token);
     }

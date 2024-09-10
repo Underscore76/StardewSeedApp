@@ -1,3 +1,4 @@
+import hashlib
 import sqlite3
 import bcrypt
 import httpx
@@ -9,6 +10,8 @@ from api.services.ddb import post_user_meta
 from api.services.secrets import _get_secret_key
 
 security = HTTPBearer()
+
+SECRET_KEY = _get_secret_key()
 
 
 async def get_discord_user(
@@ -29,9 +32,11 @@ async def get_discord_user(
     user = User.model_validate(user_data)
     post_user_meta(user)
 
-    # spoof storing the session in a database
+    # NOTE: we don't really care about security, I have no identifiable information that's not easily
+    # accessible to a base discord user (user id, username, avatar path)
+    # I just need a way to uniquely identify the user and combat against cookie tampering/spoofing
     hashed_user_id = bcrypt.hashpw(
-        (user.user_id + _get_secret_key()).encode("utf-8"), bcrypt.gensalt()
+        (user.user_id + SECRET_KEY).encode("utf-8"), bcrypt.gensalt(4)
     ).decode("utf-8")
     return user.user_id, hashed_user_id
 
@@ -43,7 +48,7 @@ async def get_cookie_user(request: Request) -> str:
         raise HTTPException(status_code=401)
     # lookup session in database
     if not bcrypt.checkpw(
-        (user_id + _get_secret_key()).encode("utf-8"), hashed_user_id.encode("utf-8")
+        (user_id + SECRET_KEY).encode("utf-8"), hashed_user_id.encode("utf-8")
     ):
         raise HTTPException(status_code=401)
     return user_id

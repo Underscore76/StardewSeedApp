@@ -1,10 +1,9 @@
-name: Deploying application
+name: Deploying API
 
 on:
   push:
     branches: ["main"]
     paths:
-      - "app/**"
       - "api/**"
   workflow_dispatch:
 

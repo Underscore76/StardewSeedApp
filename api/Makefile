@@ -8,6 +8,7 @@ build:
 run-it:
 	docker run \
 		--rm -it \
+		-v ${HOME}/.aws:/root/.aws \
 		-p 8000:8000 \
 		--entrypoint /bin/bash \
 		${IMAGE_NAME}
@@ -15,5 +16,6 @@ run-it:
 run:
 	docker run \
 		--rm \
+		-v ${HOME}/.aws:/root/.aws \
 		-p 8000:8000 \
 		${IMAGE_NAME}

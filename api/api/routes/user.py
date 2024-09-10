@@ -1,9 +1,15 @@
+import os
 from fastapi import APIRouter, Depends, Response
+from api.services.ssm import _get_ssm_param_value
 from api.auth.token import get_cookie_user, get_discord_user
 
 router = APIRouter(
     prefix="/user",
     tags=["user"],
+)
+
+DOMAIN_NAME = os.environ.get(
+    "DOMAIN_NAME", _get_ssm_param_value("/route53/hostedzone/name")
 )
 
 
@@ -17,6 +23,7 @@ def set_cookie(response: Response, key: str, value: str | None):
         secure=True,
         samesite="strict",
         httponly=True,
+        domain=DOMAIN_NAME,
     )
 
 

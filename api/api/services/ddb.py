@@ -1,11 +1,13 @@
 from functools import cache
 import json
 from decimal import Decimal
+import os
 from typing import Union
 import boto3
 from boto3.dynamodb.conditions import Key
-from mypy_boto3_dynamodb.service_resource import Table
 
+
+from api.services.ssm import _get_ssm_param_value
 from api.models.user import User
 from api.models.job import Job, JobStatus
 from boto3.dynamodb.types import TypeDeserializer
@@ -22,12 +24,12 @@ setattr(TypeDeserializer, "_deserialize_n", lambda _, number: serialize_number(n
 
 @cache
 def _get_table_name() -> str:
-    ssm = boto3.client("ssm")
-    param = ssm.get_parameter(Name="/seed-job-ddb/table-name")
-    return param["Parameter"]["Value"]
+    return os.environ.get(
+        "TABLE_NAME", _get_ssm_param_value("/seed-job-ddb/table-name")
+    )
 
 
-def _get_table(name: str | None = None) -> Table:
+def _get_table(name: str | None = None):
     if name is None:
         name = _get_table_name()
     dynamodb = boto3.resource("dynamodb")

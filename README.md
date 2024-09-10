@@ -16,21 +16,23 @@ This project is a standalone web application for searching for seeds in Stardew 
 * (local) Basic FastAPI CRUD operations for working with deployed ddb table
 * (local) Frontend scaffold calling the local backend
 * Basic concept of job sharing (by passing `user_id.job_id`)
+* Want to continue looking at speed testing the api, the docs page is incredibly slow but the actual api seems fine
+
 
 ## TODO:
 * [X] Build basic .NET container to run a json file as a seed search
 * Deploy API to AWS Lambda behind API Gateway
-    * [ ] dockerize the FastAPI app with Mangum
-    * [ ] ECR for container image
-    * [ ] Deploy lambda
-    * [ ] API Gateway to route traffic from route53 (api.underscore76.net)
+    * [X] dockerize the FastAPI app with LWA
+    * [X] ECR for container image
+    * [X] Deploy lambda
+    * [X] API Gateway to route traffic from route53 (seed-api.underscore76.net)
     * [ ] IAM policies for:
-        * DynamoDB
-        * Cloudwatch
-        * S3
-        * SSM
-        * Secrets Manager
-        * ecs (describe tasks/run tasks)
+        * [X] DynamoDB
+        * [X] Cloudwatch
+        * [ ] S3
+        * [X] SSM
+        * [X] Secrets Manager
+        * [ ] ecs (describe tasks/run tasks)
 * Deploy Frontend to AWS S3/Cloudfront
     * [ ] S3 bucket for hosting
     * [ ] Cloudfront distribution

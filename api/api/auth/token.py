@@ -6,10 +6,9 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from api.models.user import User
 from api.services.ddb import post_user_meta
+from api.services.secrets import _get_secret_key
 
 security = HTTPBearer()
-
-secret_key = "secret"
 
 
 async def get_discord_user(
@@ -32,7 +31,7 @@ async def get_discord_user(
 
     # spoof storing the session in a database
     hashed_user_id = bcrypt.hashpw(
-        (user.user_id + secret_key).encode("utf-8"), bcrypt.gensalt()
+        (user.user_id + _get_secret_key()).encode("utf-8"), bcrypt.gensalt()
     ).decode("utf-8")
     return user.user_id, hashed_user_id
 
@@ -44,7 +43,7 @@ async def get_cookie_user(request: Request) -> str:
         raise HTTPException(status_code=401)
     # lookup session in database
     if not bcrypt.checkpw(
-        (user_id + secret_key).encode("utf-8"), hashed_user_id.encode("utf-8")
+        (user_id + _get_secret_key()).encode("utf-8"), hashed_user_id.encode("utf-8")
     ):
         raise HTTPException(status_code=401)
     return user_id

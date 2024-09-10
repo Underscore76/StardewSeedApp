@@ -18,7 +18,7 @@ RUN pip install "poetry==${POETRY_VERSION}"
 WORKDIR /app
 
 COPY poetry.lock pyproject.toml README.md ./
-RUN poetry install && rm -rf $POETRY_CACHE_DIR
+RUN poetry install --without dev && rm -rf $POETRY_CACHE_DIR
 
 COPY api api
 

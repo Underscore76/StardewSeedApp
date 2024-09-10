@@ -1,19 +1,21 @@
+const BASE_URL = "https://seed-api.underscore76.net";
+
 export async function getSharedJob(shareId: string): Promise<Job> {
-  const response = await fetch(`http://localhost:8000/job/shared/${shareId}`, {
+  const response = await fetch(`${BASE_URL}/job/shared/${shareId}`, {
     credentials: "include",
   });
   return response.json();
 }
 
 export async function getJob(jobId: string): Promise<Job> {
-  const response = await fetch(`http://localhost:8000/job/${jobId}`, {
+  const response = await fetch(`${BASE_URL}/job/${jobId}`, {
     credentials: "include",
   });
   return response.json();
 }
 
 export async function createJob(job: JobRequest): Promise<Job> {
-  const response = await fetch("http://localhost:8000/job", {
+  const response = await fetch(`${BASE_URL}/job`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -25,8 +27,8 @@ export async function createJob(job: JobRequest): Promise<Job> {
 }
 
 export async function deleteJob(jobId: string): Promise<boolean> {
-  console.log("deleting", jobId, `http://localhost:8000/job/${jobId}`);
-  const result = await fetch(`http://localhost:8000/job/${jobId}`, {
+  console.log("deleting", jobId, `${BASE_URL}/job/${jobId}`);
+  const result = await fetch(`${BASE_URL}/job/${jobId}`, {
     method: "DELETE",
     credentials: "include",
   });
@@ -34,7 +36,7 @@ export async function deleteJob(jobId: string): Promise<boolean> {
 }
 
 export async function updateCookies(token: string): Promise<void> {
-  await fetch("http://localhost:8000/user/token", {
+  await fetch(`${BASE_URL}/user/token`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -44,7 +46,7 @@ export async function updateCookies(token: string): Promise<void> {
 }
 
 export async function listJobs(): Promise<Job[]> {
-  const response = await fetch("http://localhost:8000/job", {
+  const response = await fetch(`${BASE_URL}/job`, {
     credentials: "include",
   });
   const data = await response.json();

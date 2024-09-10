@@ -23,6 +23,8 @@ Resources:
         AllowCredentials: true
         AllowHeaders:
           - '*'
+          - "authorization"
+          - "content-type"
         AllowMethods:
           - '*'
         AllowOrigins: 
@@ -56,6 +58,11 @@ Resources:
     Properties:
       PackageType: Image
       ImageUri: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}:${ImageTag}
+      Environment: 
+        Variables:
+          DOMAIN_NAME: '{{resolve:ssm:/route53/hostedzone/name}}'
+          TABLE_NAME: '{{resolve:ssm:/seed-job-ddb/table-name}}'
+          SECRET_ARN: !Ref AppSecret
       Events:
         HttpApi:
           Type: HttpApi
@@ -84,11 +91,6 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - ssm:GetParameter
-                Resource: 
-                  - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/seed-job-ddb/table-name'
               - Effect: Allow
                 Action:
                   - dynamodb:*

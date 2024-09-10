@@ -1,5 +1,5 @@
 import os
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Request, Response
 from api.services.ssm import _get_ssm_param_value
 from api.auth.token import get_cookie_user, get_discord_user
 
@@ -11,9 +11,20 @@ router = APIRouter(
 DOMAIN_NAME = _get_ssm_param_value("/route53/hostedzone/name")
 
 
-def set_cookie(response: Response, key: str, value: str | None):
+def set_cookie(request: Request, response: Response, key: str, value: str | None):
     if value is None:
         response.delete_cookie(key=key)
+        return
+    print(request.client.host)
+    if True:
+        response.set_cookie(
+            key=key,
+            value=value,
+            secure=False,
+            samesite="none",
+            httponly=False,
+            domain=DOMAIN_NAME,
+        )
         return
     response.set_cookie(
         key=key,
@@ -26,9 +37,13 @@ def set_cookie(response: Response, key: str, value: str | None):
 
 
 @router.post("/token")
-def login(response: Response, user: tuple[str, str] = Depends(get_discord_user)):
-    set_cookie(response, "user_id", user[0])
-    set_cookie(response, "user_hash", user[1])
+def login(
+    request: Request,
+    response: Response,
+    user: tuple[str, str] = Depends(get_discord_user),
+):
+    set_cookie(request, response, "user_id", user[0])
+    set_cookie(request, response, "user_hash", user[1])
     response.status_code = 200
     return response
 

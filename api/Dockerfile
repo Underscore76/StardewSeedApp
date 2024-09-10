@@ -34,5 +34,6 @@ COPY api api
 
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PORT=8000
+ENV PYTHONUNBUFFERED=1
 
 CMD exec fastapi run api/main.py

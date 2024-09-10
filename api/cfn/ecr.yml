@@ -4,6 +4,25 @@ Resources:
     Properties:
       RepositoryName: seed-api-ecr
       EmptyOnDelete: true
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+                {
+                    "rulePriority": 1,
+                    "description": "Expire images older than 7 days",
+                    "selection": {
+                        "tagStatus": "untagged",
+                        "countType": "sinceImagePushed",
+                        "countUnit": "days",
+                        "countNumber": 7
+                    },
+                    "action": {
+                        "type": "expire"
+                    }
+                }
+            ]
+          }
 
   ECRParam:
     Type: AWS::SSM::Parameter
@@ -16,7 +35,7 @@ Resources:
         project: seed-find
 
 Outputs:
-  ECRRepository:
+  RepositoryName:
     Description: The name of the ECR repository
     Value: !Ref ECRRepository   
   

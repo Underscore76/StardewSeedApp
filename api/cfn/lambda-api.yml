@@ -9,6 +9,10 @@ Parameters:
     Type: String
     Default: latest
 
+Globals:
+  Function:
+    Timeout: 30
+
 Resources:
   HttpAPI:
     Type: AWS::Serverless::HttpApi

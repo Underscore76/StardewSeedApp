@@ -25,23 +25,25 @@ This project is a standalone web application for searching for seeds in Stardew 
     * wonder how other languages/platforms handle this efficiently
     * might've just been bcrypt being slow? moving from 12 to 4 rounds made a huge difference
     * **Final Result**: lowering bcrypt rounds dramatically improved runtime (450ms at 256MB, 250ms at 512MB, 200ms at 1024MB). Going to settle on 512MB for now as a good sweet spot.
+* Had to quick crash course on networking on AWS, default VPC on an account was 6 public subnets, went down to 2 public, 2 private, and deployed a nat gateway into one of the public subnets (added a route table to point to the nat gateway/associate the two private subnets). This was needed to be able to have ECS tasks pull images from ECR without having to assign public IP addresses (which seemed bad to do, even if they had no ingress ports exposed on the container).
+* BUT! The runner pretty much works! I've manually been able to launch a job with associated user_id/job_id and have it pull the job from dynamo, run the job, and update the job in dynamo. We're basically done, soon it'll be a web dev world.
+* Need to figure out container sizing (2 day rain check for 20M seeds took maybe 2min from launch to finish (maybe 90s of job time) on a 1vCPU/2GB container). The question will be what are the diminishing returns on parallel.foreach/vcpus.
 
 
-
-## TODO:
+## Deploy TODO:
 * [X] Build basic .NET container to run a json file as a seed search
 * Deploy API to AWS Lambda behind API Gateway
     * [X] dockerize the FastAPI app with LWA
     * [X] ECR for container image
     * [X] Deploy lambda
     * [X] API Gateway to route traffic from route53 (seed-api.underscore76.net)
-    * [ ] IAM policies for:
+    * [X] IAM policies for:
         * [X] DynamoDB
         * [X] Cloudwatch
-        * [ ] S3
         * [X] SSM
         * [X] Secrets Manager
-        * [ ] ecs (describe tasks/run tasks)
+        * [X] ecs (describe tasks/run tasks)
+    * [ ] launch an ECS task to run the job
 * Deploy Frontend to AWS S3/Cloudfront
     * [ ] S3 bucket for hosting
     * [ ] Cloudfront distribution
@@ -52,17 +54,16 @@ This project is a standalone web application for searching for seeds in Stardew 
         * Cloudfront
         * Route53
 * Deploy Runner as TaskDefinition to AWS Fargate
-    * [ ] Fargate Cluster to run the tasks in
-    * [ ] ECR for container image
-    * [ ] build and push container image to ECR with github actions
-    * [ ] TaskDefinition for running the container
-    * [ ] IAM policies for:
-        * S3
+    * [X] Fargate Cluster to run the tasks in
+    * [X] ECR for container image
+    * [X] build and push container image to ECR with github actions
+    * [X] TaskDefinition for running the container
+    * [X] IAM policies for:
         * DynamoDB
 
 # Running locally
 
-We are using npm to manage basic run scripts for both the frontend and backend right now, to run them simultaneously at the top level of this repo run `npm install` to get [concurrently](https://github.com/open-cli-tools/concurrently#readme).
+We are using npm to manage basic run scripts for both the frontend and backend right now, to run them simultaneously at the top level of this repo run `npm install` to get [concurrently](https://github.com/open-cli-tools/concurrently#readme). then run `npm run dev` to start both the frontend and backend.
 
 ## Building frontend
 * frontend uses npm for dependency management

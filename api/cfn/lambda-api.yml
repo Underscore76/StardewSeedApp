@@ -106,6 +106,13 @@ Resources:
                   - secretsmanager:GetSecretValue
                 Resource:
                   - !Ref AppSecret
+              - Effect: Allow
+                Action:
+                  - ecs:RunTask
+                  - ecs:StopTask
+                  - ecs:Describe*
+                  - ecs:ListTasks
+                Resource: '*'
   
   GatewayInvokeLambdaPermissions:
     Type: AWS::Lambda::Permission

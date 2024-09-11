@@ -10,6 +10,10 @@ on:
 permissions:
   id-token: write # This is required for requesting the JWT  
 
+env:
+  CPU: 256
+  MEMORY: 512
+
 jobs:
   deploy-runner:
     name: Deploy Job Runner
@@ -48,7 +52,18 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           aws s3 cp ${{ secrets.ARTIFACT_BUCKET }}/lib ./lib --recursive
-          zip -r runner.zip .
-          aws s3 cp runner.zip ${{ secrets.ARTIFACT_BUCKET }}/runner.zip
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . 
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: deploy runner
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+            name: seed-runner-ecs
+            template: ${{ env.working-directory }}/cfn/ecs.yml
+            capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
+            no-fail-on-empty-changeset: "1"
+            parameter-overrides: >-
+              ImageTag=$IMAGE_TAG,
+              Repository=$REPOSITORY,
+              Cpu=${{ env.CPU }},
+              Memory=${{ env.MEMORY }}

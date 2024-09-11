@@ -1,0 +1,114 @@
+Parameters:
+  ImageTag:
+    Type: String
+    Description: The tag of the Docker image to deploy
+  Repository:
+    Type: String
+    Default: seed-runner-ecr
+  Cpu:
+    Type: Number
+    Default: 256
+  Memory:
+    Type: Number
+    Default: 512
+  MaxValidSeeds:
+    Type: Number
+    Default: 1000
+
+Resources:
+  FargateCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: seed-runner-cluster
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+  
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-execution-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+           - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-task-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: !Sub ${AWS::StackName}-task-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:*
+                Resource:
+                  - '{{resolve:ssm:/seed-job-ddb/table-arn}}'
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                Resource:
+                  - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/seed-job-ddb/table-name'
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: seed-runner-task
+      Cpu: !Ref Cpu
+      Memory: !Ref Memory
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ExecutionRoleArn: !GetAtt TaskRole.Arn
+      TaskRoleArn: !GetAtt TaskRole.Arn
+      ContainerDefinitions:
+        - Name: seed-runner
+          Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}:${ImageTag}
+          Essential: true
+          # I still don't understand how the base is an int and this is a string
+          Cpu: !Sub "${Cpu}"
+          Memory: !Sub "${Memory}"
+          Environment:
+            - Name: MAX_VALID_SEEDS
+              Value: !Ref MaxValidSeeds
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Sub ${AWS::StackName}-logs
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+
+  ClusterParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /seed-runner/cluster-arn
+      Type: String
+      Value: !Ref FargateCluster
+      Description: The name of the ECS cluster
+      Tags:
+        project: seed-find
+  
+  TaskFamilyParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /seed-runner/task-family
+      Type: String
+      Value: seed-runner-task
+      Description: The name of the ECS task family
+      Tags:
+        project: seed-find

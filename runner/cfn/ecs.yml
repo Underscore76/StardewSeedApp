@@ -24,6 +24,12 @@ Resources:
         - Name: containerInsights
           Value: enabled
   
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub ${AWS::StackName}-logs
+      RetentionInDays: 30
+
   ExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -56,6 +62,10 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  - logs:*
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
                   - dynamodb:*
                 Resource:
                   - '{{resolve:ssm:/seed-job-ddb/table-arn}}'
@@ -74,7 +84,7 @@ Resources:
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
-      ExecutionRoleArn: !GetAtt TaskRole.Arn
+      ExecutionRoleArn: !GetAtt ExecutionRole.Arn
       TaskRoleArn: !GetAtt TaskRole.Arn
       ContainerDefinitions:
         - Name: seed-runner

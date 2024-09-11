@@ -48,5 +48,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           aws s3 cp ${{ secrets.ARTIFACT_BUCKET }}/lib ${{ env.working-directory }}/lib --recursive
+          zip -r runner.zip .
+          aws s3 cp runner.zip ${{ secrets.ARTIFACT_BUCKET }}/runner.zip
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . 
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG

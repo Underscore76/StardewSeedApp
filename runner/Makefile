@@ -7,13 +7,15 @@ build:
 
 run:
 	docker run \
+		-v ${HOME}/.aws:/root/.aws \
 		--rm -it \
 		--entrypoint /bin/bash \
 		${IMAGE_NAME}
 
 run-local:
 	docker run \
+		-v ./:/app \
+		-v ${HOME}/.aws:/root/.aws \
 		--rm -it \
 		--entrypoint /bin/bash \
-		-v ./:/app \
 		${IMAGE_NAME}

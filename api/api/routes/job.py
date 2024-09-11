@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
+from api.models.requirements import JobRequirements
 from api.auth.token import get_cookie_user
-from api.models.job import Job, JobRequest, JobStatus
+from api.models.job import Job
 from api.services import ddb
 
 router = APIRouter(
@@ -10,7 +11,7 @@ router = APIRouter(
 
 
 @router.post("")
-def create_job(job: JobRequest, user_id: str = Depends(get_cookie_user)):
+def create_job(job: JobRequirements, user_id: str = Depends(get_cookie_user)):
     job = Job(user_id=user_id, payload=job)
     ddb.post_job(job)
     return job
@@ -26,6 +27,12 @@ def get_jobs(user_id: str = Depends(get_cookie_user)):
 def get_job(job_id: str, user_id: str = Depends(get_cookie_user)):
     job = ddb.get_job_by_id(user_id, job_id)
     return job
+
+
+@router.get("/{job_id}/status")
+def get_job_stats(job_id: str, user_id: str = Depends(get_cookie_user)):
+    job = ddb.get_job_by_id(user_id, job_id)
+    return job.status
 
 
 @router.get("/shared/{combo_id}")

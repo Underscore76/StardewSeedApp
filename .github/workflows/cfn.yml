@@ -31,3 +31,10 @@ jobs:
             name: seed-job-ddb
             template: cfn/dynamodb.yml
             no-fail-on-empty-changeset: "1"
+
+      - name: deploy s3
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+            name: seed-job-s3
+            template: cfn/s3.yml
+            no-fail-on-empty-changeset: "1"

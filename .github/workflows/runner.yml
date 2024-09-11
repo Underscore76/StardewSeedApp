@@ -1,22 +1,22 @@
-name: Deploying API
+name: Deploying Runner
 
 on:
   push:
     branches: ["main"]
     paths:
-      - "api/**"
+      - "runner/**"
   workflow_dispatch:
 
 permissions:
   id-token: write # This is required for requesting the JWT  
 
 jobs:
-  deploy-api:
-    name: Deploy API
+  deploy-runner:
+    name: Deploy Job Runner
     runs-on: ubuntu-latest
     env:
-      working-directory: api
-    
+      working-directory: runner
+
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -27,19 +27,19 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
-
+      
       - name: deploy ecr
         id: deploy-ecr
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-            name: seed-api-ecr
+            name: seed-runner-ecr
             template: ${{ env.working-directory }}/cfn/ecr.yml
             no-fail-on-empty-changeset: "1"
-
+      
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-
+      
       - name: Build, tag, and push docker image to Amazon ECR
         working-directory: ${{ env.working-directory }}
         env:
@@ -47,16 +47,6 @@ jobs:
           REPOSITORY: ${{ steps.deploy-ecr.outputs.RepositoryName }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          aws s3 cp ${{ secrets.ARTIFACT_BUCKET }}/lib ${{ env.working-directory }}/lib --recursive
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . 
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-      - name: deploy api
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-            name: seed-api-lambda
-            template: ${{ env.working-directory }}/cfn/lambda-api.yml
-            capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
-            no-fail-on-empty-changeset: "1"
-            parameter-overrides: >-
-              ImageTag=${{ github.sha }},
-              Repository=${{ steps.deploy-ecr.outputs.RepositoryName }}

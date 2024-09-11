@@ -1,0 +1,41 @@
+Resources:
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: seed-runner-ecr
+      EmptyOnDelete: true
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+                {
+                    "rulePriority": 1,
+                    "description": "Expire images older than 7 days",
+                    "selection": {
+                        "tagStatus": "untagged",
+                        "countType": "sinceImagePushed",
+                        "countUnit": "days",
+                        "countNumber": 7
+                    },
+                    "action": {
+                        "type": "expire"
+                    }
+                }
+            ]
+          }
+
+  ECRParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /seed-runner/ecr
+      Type: String
+      Value: !Ref ECRRepository
+      Description: The name of the ECR repository
+      Tags:
+        project: seed-find
+
+Outputs:
+  RepositoryName:
+    Description: The name of the ECR repository
+    Value: !Ref ECRRepository   
+  

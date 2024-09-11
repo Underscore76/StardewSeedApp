@@ -3,7 +3,7 @@
 ![](https://github.com/Underscore76/StardewSeedApp/actions/workflows/cfn.yml/badge.svg)
 [![Deploying Runner](https://github.com/Underscore76/StardewSeedApp/actions/workflows/runner.yml/badge.svg)](https://github.com/Underscore76/StardewSeedApp/actions/workflows/runner.yml)
 [![Deploying API](https://github.com/Underscore76/StardewSeedApp/actions/workflows/api.yml/badge.svg)](https://github.com/Underscore76/StardewSeedApp/actions/workflows/api.yml)
-[![Deploying App](https://github.com/Underscore76/StardewSeedApp/actions/workflows/app.yml/badge.svg)](https://github.com/Underscore76/StardewSeedApp/actions/workflows/app.yml)
+[![Deploying Web App](https://github.com/Underscore76/StardewSeedApp/actions/workflows/app.yml/badge.svg)](https://github.com/Underscore76/StardewSeedApp/actions/workflows/app.yml)
 
 This project is a standalone web application for searching for seeds in Stardew Valley 1.6, hosted on AWS. User authentication is through Discord OAuth2, which uses a user's unique id to track their jobs and preferences. The application is broken into 3 distinct parts:
 

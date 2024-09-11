@@ -1,4 +1,4 @@
-name: deploy cfn resources
+name: Deploying Common CFN
 
 on:
   push:

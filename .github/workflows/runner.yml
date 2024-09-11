@@ -1,4 +1,4 @@
-name: Deploying Runner
+name: Deploying Task Runner
 
 on:
   push:
@@ -60,7 +60,7 @@ jobs:
         with:
             name: seed-runner-ecs
             template: ${{ env.working-directory }}/cfn/ecs.yml
-            capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
+            capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
             no-fail-on-empty-changeset: "1"
             parameter-overrides: >-
               ImageTag=$IMAGE_TAG,

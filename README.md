@@ -1,7 +1,9 @@
 # StardewSeedApp
 
 ![](https://github.com/Underscore76/StardewSeedApp/actions/workflows/cfn.yml/badge.svg)
-
+[![Deploying Runner](https://github.com/Underscore76/StardewSeedApp/actions/workflows/runner.yml/badge.svg)](https://github.com/Underscore76/StardewSeedApp/actions/workflows/runner.yml)
+[![Deploying API](https://github.com/Underscore76/StardewSeedApp/actions/workflows/api.yml/badge.svg)](https://github.com/Underscore76/StardewSeedApp/actions/workflows/api.yml)
+[![Deploying App](https://github.com/Underscore76/StardewSeedApp/actions/workflows/app.yml/badge.svg)](https://github.com/Underscore76/StardewSeedApp/actions/workflows/app.yml)
 
 This project is a standalone web application for searching for seeds in Stardew Valley 1.6, hosted on AWS. User authentication is through Discord OAuth2, which uses a user's unique id to track their jobs and preferences. The application is broken into 3 distinct parts:
 
@@ -22,6 +24,7 @@ This project is a standalone web application for searching for seeds in Stardew 
     * I wonder if I'm just eating a ton of damage in start times?
     * wonder how other languages/platforms handle this efficiently
     * might've just been bcrypt being slow? moving from 12 to 4 rounds made a huge difference
+    * **Final Result**: lowering bcrypt rounds dramatically improved runtime (450ms at 256MB, 250ms at 512MB, 200ms at 1024MB). Going to settle on 512MB for now as a good sweet spot.
 
 
 

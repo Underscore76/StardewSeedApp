@@ -36,7 +36,16 @@ jobs:
           template: ${{ env.working-directory }}/cfn/template.yml
           no-fail-on-empty-changeset: "1"
 
-      # - name: Setup node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '16'
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: build app
+        run: |
+          cd ${{ env.working-directory }}
+          npm install
+          npm run build
+
+          aws s3 cp dist s3://${{ steps.deploy-bucket.outputs.WebsiteBucketName }} --recursive
+          aws cloudfront create-invalidation --distribution-id ${{ steps.deploy-bucket.outputs.DistributionId }} --paths "/index.html"

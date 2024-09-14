@@ -10,6 +10,7 @@ export default {
       colors: {
         "discord-gray": "#2f3136",
         "discord-blue": "#5865F2",
+        "stardew-beige": "#FFE0B0"
       },
       animation: {
         'reverse-spin': 'reverse-spin 1s linear infinite'

@@ -1,4 +1,7 @@
-const BASE_URL = "https://seed-api.underscore76.net";
+const BASE_URL =
+  import.meta.env.MODE == "dev"
+    ? "http://localhost:8000"
+    : "https://seed-api.underscore76.net";
 
 export async function getSharedJob(shareId: string): Promise<Job> {
   const response = await fetch(`${BASE_URL}/job/shared/${shareId}`, {
@@ -14,7 +17,7 @@ export async function getJob(jobId: string): Promise<Job> {
   return response.json();
 }
 
-export async function createJob(job: JobRequest): Promise<Job> {
+export async function createJob(job: JobRequirements): Promise<Job> {
   const response = await fetch(`${BASE_URL}/job`, {
     method: "POST",
     credentials: "include",

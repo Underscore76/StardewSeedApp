@@ -27,3 +27,16 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Deploy Bucket and CDN
+        id: deploy-bucket
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: seed-web-app
+          template: ${{ env.working-directory }}/cfn/template.yml
+          no-fail-on-empty-changeset: "1"
+
+      # - name: Setup node
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '16'

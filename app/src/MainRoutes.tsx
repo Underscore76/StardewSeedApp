@@ -30,7 +30,7 @@ export const MainRoutes = [
         element: <JobView />,
         loader: jobLoader,
         handle: {
-          title: (data) => `SeedFinder - Job: ${data.job_id}`,
+          title: (data: Job) => `SeedFinder - Job: ${data.job_id}`,
         },
       },
       {
@@ -38,7 +38,7 @@ export const MainRoutes = [
         element: <ShareView />,
         loader: shareLoader,
         handle: {
-          title: (data) => `SeedFinder - Shared: ${data.job_id}`,
+          title: (data: Job) => `SeedFinder - Shared: ${data.job_id}`,
         },
       },
     ],

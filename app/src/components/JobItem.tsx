@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 type JobItemProps = {
   job: Job;
 };
@@ -12,14 +10,6 @@ export default function JobItem(props: JobItemProps) {
       <p key="hash">Job Hash: {job.job_hash}</p>
       <p key="start">Start Time: {job.start_time}</p>
       <p key="end">End Time: {job.end_time}</p>
-      {job.payload &&
-        Object.keys(job.payload).map((key) => {
-          return (
-            <p key={key}>
-              {key}: {job.payload[key]}
-            </p>
-          );
-        })}
     </div>
   );
 }

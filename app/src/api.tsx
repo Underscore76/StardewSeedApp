@@ -1,5 +1,5 @@
 const BASE_URL =
-  import.meta.env.MODE == "dev"
+  import.meta.env.MODE == "development"
     ? "http://localhost:8000"
     : "https://seed-api.underscore76.net";
 
@@ -52,7 +52,7 @@ export async function listJobs(): Promise<Job[]> {
     credentials: "include",
   });
   const data = await response.json();
-  return data.sort((a, b) => {
+  return data.sort((a: Job, b: Job) => {
     if (a.start_time === b.start_time) {
       return 0;
     }

@@ -3,7 +3,6 @@ import {
   useOutletContext,
   useRevalidator,
 } from "react-router-dom";
-import { useUser } from "../UserProvider";
 import { useEffect } from "react";
 import JobCard from "../components/Jobs/JobCard";
 import { listJobs } from "../api";
@@ -14,7 +13,6 @@ export async function loader(): Promise<Job[]> {
 }
 
 export default function Home() {
-  const user = useUser();
   const revalidator = useRevalidator();
   const setPageName = useOutletContext() as OutletContext;
   const jobs = useLoaderData() as Job[];

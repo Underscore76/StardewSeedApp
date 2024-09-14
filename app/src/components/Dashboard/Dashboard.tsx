@@ -1,6 +1,5 @@
 import { Outlet, useMatches } from "react-router-dom";
 import Navbar from "./Navbar";
-import { useAuth } from "react-oidc-context";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {

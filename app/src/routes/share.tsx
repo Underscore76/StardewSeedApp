@@ -1,6 +1,6 @@
 import {
+  Params,
   redirect,
-  redirectDocument,
   useLoaderData,
   useOutletContext,
 } from "react-router-dom";
@@ -8,7 +8,7 @@ import JobItem from "../components/JobItem";
 import { getSharedJob } from "../api";
 import { useEffect } from "react";
 
-export async function loader({ params }) {
+export async function loader({ params }: { params: Params }) {
   const shareId = params.shareId as string | undefined;
   if (shareId === undefined) {
     return redirect("/");

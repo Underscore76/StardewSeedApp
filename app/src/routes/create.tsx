@@ -1,22 +1,12 @@
-import {
-  Field,
-  Label,
-  Switch,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from "@headlessui/react";
-import { useOutletContext, Form, redirect, useSubmit } from "react-router-dom";
-import { createJob } from "../api";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import { useOutletContext, useSubmit } from "react-router-dom";
 import { useEffect, useState } from "react";
 import WeatherSelect from "../components/CreateJob/WeatherSelect";
 import InputField from "../components/General/InputField";
 import Toggle from "../components/General/Toggle";
 import NightEventSelect from "../components/CreateJob/NightEventSelect";
 
-export async function action({ request }) {
+export async function action({ request }: { request: Request }) {
   const form = (await request.json()) as JobRequirements;
   console.log(form);
   return true;
@@ -59,7 +49,7 @@ function BaseForm(props: BaseFormProps) {
             name="start_seed"
             type="number"
             value={props.startSeed}
-            setValue={props.setStartSeed}
+            setValue={(value) => props.setStartSeed(Number(value))}
             minValue={0}
             maxValue={props.endSeed}
           />
@@ -71,7 +61,7 @@ function BaseForm(props: BaseFormProps) {
             name="end_seed"
             type="number"
             value={props.endSeed}
-            setValue={props.setEndSeed}
+            setValue={(value) => props.setEndSeed(Number(value))}
             minValue={props.startSeed}
             maxValue={2147483647}
           />

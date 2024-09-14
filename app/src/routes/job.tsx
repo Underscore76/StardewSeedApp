@@ -1,6 +1,6 @@
 import {
   redirect,
-  redirectDocument,
+  Params,
   useLoaderData,
   useOutletContext,
 } from "react-router-dom";
@@ -8,7 +8,7 @@ import JobItem from "../components/JobItem";
 import { getJob } from "../api";
 import { useEffect } from "react";
 
-export async function loader({ params }) {
+export async function loader({ params }: { params: Params }) {
   const jobId = params.jobId as string | undefined;
   if (jobId === undefined) {
     return redirect("/");

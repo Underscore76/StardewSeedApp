@@ -17,7 +17,7 @@ const onSignoutCallback = (): void => {
 };
 
 const redirect_uri =
-  import.meta.env.MODE === "dev"
+  import.meta.env.MODE === "development"
     ? "http://localhost:5173"
     : "https://seed-find.underscore76.net";
 
@@ -33,6 +33,7 @@ const oidcConfig = {
     userinfo_endpoint: "https://discord.com/api/users/@me",
     revocation_endpoint: "https://discord.com/api/oauth2/token/revoke",
   },
+  userStore: new WebStorageStateStore({ store: window.localStorage }),
 } as AuthProviderProps;
 
 const router = createBrowserRouter(MainRoutes);
@@ -68,7 +69,6 @@ export default function App() {
       {...oidcConfig}
       onSigninCallback={onSigninCallback}
       onSignoutCallback={onSignoutCallback}
-      userStore={new WebStorageStateStore({ store: window.localStorage })}
     >
       <AuthApp />
     </AuthProvider>

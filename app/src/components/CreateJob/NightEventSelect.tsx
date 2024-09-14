@@ -76,7 +76,7 @@ export default function NightEventSelect(props: NightEventSelectProps) {
   };
 
   const options = useMemo(() => {
-    const d = {};
+    const d: Record<number, NightEvent> = {};
     nightRequirements.forEach((req) => {
       const day = req.day;
       d[day] = req.event;

@@ -3,7 +3,7 @@ import { useAuth } from "react-oidc-context";
 import Loading from "./components/Loading";
 import { updateCookies } from "./api";
 
-const UserContext = createContext<User>(undefined);
+const UserContext = createContext<User | undefined>(undefined);
 
 export default function UserProvider({
   children,
@@ -11,7 +11,7 @@ export default function UserProvider({
   children: React.ReactNode;
 }) {
   const auth = useAuth();
-  const [user, setUser] = useState<User>(undefined);
+  const [user, setUser] = useState<User | undefined>(undefined);
   useEffect(() => {
     if (auth.user) {
       const fetchData = async (token: string) => {

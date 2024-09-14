@@ -6,13 +6,12 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { ArrowPathIcon, UserPlusIcon } from "@heroicons/react/24/outline";
+import { HomeIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "react-oidc-context";
 import { useUser } from "../../UserProvider";
+import { Link } from "react-router-dom";
 
-type NavbarProps = {};
-
-export default function Navbar(props: NavbarProps) {
+export default function Navbar() {
   const auth = useAuth();
   const user = useUser();
 
@@ -30,6 +29,14 @@ export default function Navbar(props: NavbarProps) {
               </div>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
+              <Link
+                to={`/`}
+                className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none"
+              >
+                <span className="absolute -inset-1.5" />
+                <span className="sr-only">Return Home</span>
+                <HomeIcon className="h-6 w-6" aria-hidden="true" />
+              </Link>
               <Menu as="div" className="relative ml-3">
                 <div>
                   <MenuButton className="relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
@@ -37,7 +44,7 @@ export default function Navbar(props: NavbarProps) {
                     <span className="sr-only">Open user menu</span>
                     <img
                       alt=""
-                      src={user.avatar}
+                      src={user?.avatar}
                       className="h-8 w-8 rounded-full"
                     />
                   </MenuButton>

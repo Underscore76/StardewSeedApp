@@ -74,7 +74,7 @@ export default function WeatherSelect(props: WeatherSelectProps) {
   };
 
   const options = useMemo(() => {
-    const d = {};
+    const d: Record<number, Weather> = {};
     weatherRequirements.forEach((req) => {
       const day = req.day;
       d[day] = req.weather;

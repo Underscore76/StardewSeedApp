@@ -1,7 +1,6 @@
 import { Transition } from "@headlessui/react";
 import { CheckCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
 
 type NotificationProps = {
   show: boolean;

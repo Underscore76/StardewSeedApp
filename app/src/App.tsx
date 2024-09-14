@@ -11,6 +11,7 @@ import Loading from "./components/Loading";
 import { User, WebStorageStateStore } from "oidc-client-ts";
 import UserProvider from "./UserProvider";
 import LoginPage from "./components/LoginPage";
+import { BASE_URL } from "./api";
 
 const onSigninCallback = (_user: User | void): void => {
   console.log("onSigninCallback");
@@ -25,7 +26,7 @@ const onSignoutCallback = (): void => {
 const oidcConfig = {
   authority: "https://discord.com",
   client_id: "1282098818669613139",
-  redirect_uri: "http://localhost:5173",
+  redirect_uri: BASE_URL,
   scope: "identify",
   metadata: {
     issuer: "https://discord.com",

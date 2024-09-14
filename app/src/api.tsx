@@ -1,4 +1,4 @@
-const BASE_URL =
+export const BASE_URL =
   import.meta.env.MODE == "dev"
     ? "http://localhost:8000"
     : "https://seed-api.underscore76.net";

@@ -66,6 +66,8 @@ Resources:
         DefaultCacheBehavior:
           TargetOriginId: WebsiteOrigin
           ViewerProtocolPolicy: redirect-to-https
+          ForwardedValues:
+            QueryString: true
         Enabled: true
         DefaultRootObject: index.html
         ViewerCertificate:

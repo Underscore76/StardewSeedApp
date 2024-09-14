@@ -11,6 +11,7 @@ app = FastAPI()
 origins = [
     "http://localhost",
     "http://localhost:5173",
+    "https://seed-find.underscore76.net",
 ]
 app.add_middleware(
     CORSMiddleware,

@@ -74,6 +74,11 @@ Resources:
           AcmCertificateArn: '{{resolve:ssm:/route53/hostedzone/certificate}}'
           SslSupportMethod: "sni-only"
         Comment: "CDN for S3-backed website"
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: "/index.html"
 
   RecordSetGroup:
     Type: AWS::Route53::RecordSetGroup

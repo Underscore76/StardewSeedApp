@@ -18,7 +18,8 @@ function WeatherCell(weather?: Weather) {
         weather === "Storm" && "bg-gray-400",
         weather === "Snow" && "bg-white",
         weather === "GreenRain" && "bg-green-200",
-        "h-6 cursor-pointer rounded-md border border-gray-300 bg-gray-50 px-3 text-center font-semibold",
+        weather === undefined && "bg-gray-50",
+        "h-6 cursor-pointer rounded-md border border-gray-300 px-3 text-center font-semibold",
       )}
     >
       {weather ? weather : "Any"}

@@ -19,7 +19,8 @@ function NightEventCell(event?: NightEvent) {
         event === "StoneOwl" && "bg-gray-400",
         event === "StrangeCapsule" && "bg-green-200",
         event === "WindStorm" && "bg-blue-200",
-        "h-6 cursor-pointer rounded-md border border-gray-300 bg-gray-50 px-3 text-center font-semibold",
+        event === undefined && "bg-gray-50",
+        "h-6 cursor-pointer rounded-md border border-gray-300 px-3 text-center font-semibold",
       )}
     >
       {event ? event : "Any"}

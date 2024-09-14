@@ -30,6 +30,7 @@ Resources:
         AllowOrigins: 
           - 'https://{{resolve:ssm:/route53/hostedzone/name}}'
           - 'https://web.{{resolve:ssm:/route53/hostedzone/name}}'
+          - 'https://seed-find.{{resolve:ssm:/route53/hostedzone/name}}'
           - 'http://localhost:5173'
         ExposeHeaders:
           - '*'

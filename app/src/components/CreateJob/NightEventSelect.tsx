@@ -43,7 +43,6 @@ export default function NightEventSelect(props: NightEventSelectProps) {
     const existingRequirement = nightRequirements.find(
       (req) => req.day === day,
     )?.event;
-    console.log({ day, existingRequirement, options });
 
     if (existingRequirement) {
       const index = eventOptions.indexOf(existingRequirement);

@@ -1,20 +1,13 @@
-import React, { useEffect } from "react";
-import ReactDOM from "react-dom/client";
+import { useEffect } from "react";
 import { MainRoutes } from "./MainRoutes";
-import {
-  RouterProvider,
-  createBrowserRouter,
-  createHashRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AuthProvider, AuthProviderProps, useAuth } from "react-oidc-context";
 import Loading from "./components/Loading";
 import { User, WebStorageStateStore } from "oidc-client-ts";
 import UserProvider from "./UserProvider";
 import LoginPage from "./components/LoginPage";
-import { BASE_URL } from "./api";
 
 const onSigninCallback = (_user: User | void): void => {
-  console.log("onSigninCallback");
   window.history.replaceState({}, document.title, window.location.pathname);
 };
 
@@ -23,10 +16,15 @@ const onSignoutCallback = (): void => {
   window.location.pathname = "";
 };
 
+const redirect_uri =
+  import.meta.env.MODE === "dev"
+    ? "http://localhost:5173"
+    : "https://seed-find.underscore76.net";
+
 const oidcConfig = {
   authority: "https://discord.com",
   client_id: "1282098818669613139",
-  redirect_uri: BASE_URL,
+  redirect_uri: redirect_uri,
   scope: "identify",
   metadata: {
     issuer: "https://discord.com",
@@ -41,8 +39,6 @@ const router = createBrowserRouter(MainRoutes);
 
 function AuthApp() {
   const auth = useAuth();
-  console.log("auth", auth);
-  console.log(document.cookie);
 
   useEffect(() => {
     return auth.events.addAccessTokenExpiring(() => {
@@ -63,7 +59,6 @@ function AuthApp() {
   if (auth.isLoading) {
     return <Loading />;
   }
-  console.log("not authenticated");
   return <LoginPage />;
 }
 

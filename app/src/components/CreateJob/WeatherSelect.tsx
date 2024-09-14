@@ -41,7 +41,6 @@ export default function WeatherSelect(props: WeatherSelectProps) {
     const existingRequirement = weatherRequirements.find(
       (req) => req.day === day,
     )?.weather;
-    console.log({ day, existingRequirement, options });
 
     if (existingRequirement) {
       const index = weatherOptions.indexOf(existingRequirement);

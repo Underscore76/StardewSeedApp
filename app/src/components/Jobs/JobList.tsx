@@ -12,7 +12,6 @@ export default function JobList(props: JobListProps) {
   const { jobs } = props;
   const [show, setShow] = useState(false);
   const onDelete = (jobId: string) => () => {
-    console.log("Deleting job", jobId);
     deleteJob(jobId).then(() => {
       props.onDeleteJob && props.onDeleteJob();
     });

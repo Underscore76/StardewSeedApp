@@ -1,4 +1,4 @@
-export const BASE_URL =
+const BASE_URL =
   import.meta.env.MODE == "dev"
     ? "http://localhost:8000"
     : "https://seed-api.underscore76.net";
@@ -30,7 +30,6 @@ export async function createJob(job: JobRequirements): Promise<Job> {
 }
 
 export async function deleteJob(jobId: string): Promise<boolean> {
-  console.log("deleting", jobId, `${BASE_URL}/job/${jobId}`);
   const result = await fetch(`${BASE_URL}/job/${jobId}`, {
     method: "DELETE",
     credentials: "include",

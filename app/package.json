@@ -12,6 +12,10 @@
   "dependencies": {
     "@headlessui/react": "^2.1.5",
     "@heroicons/react": "^2.1.5",
+    "ajv": "^8.17.1",
+    "brace": "^0.11.1",
+    "jsoneditor": "^9.10.5",
+    "jsoneditor-react18": "^0.5.0",
     "oidc-client-ts": "^3.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -21,6 +25,7 @@
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@tailwindcss/forms": "^0.5.9",
+    "@types/jsoneditor": "^9.9.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

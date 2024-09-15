@@ -26,7 +26,12 @@ Resources:
           - "authorization"
           - "content-type"
         AllowMethods:
-          - '*'
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+          - PATCH
         AllowOrigins: 
           - 'https://{{resolve:ssm:/route53/hostedzone/name}}'
           - 'https://web.{{resolve:ssm:/route53/hostedzone/name}}'

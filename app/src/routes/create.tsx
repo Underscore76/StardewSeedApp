@@ -1,17 +1,17 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import { useOutletContext, useSubmit } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { redirect, useOutletContext, useSubmit } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import WeatherSelect from "../components/CreateJob/WeatherSelect";
 import InputField from "../components/General/InputField";
 import Toggle from "../components/General/Toggle";
 import NightEventSelect from "../components/CreateJob/NightEventSelect";
+import JobConfirmDialog from "../components/CreateJob/JobConfirmDialog";
+import { createJob } from "../api";
 
 export async function action({ request }: { request: Request }) {
-  const form = (await request.json()) as JobRequirements;
-  console.log(form);
-  return true;
-  // const data = await createJob(job);
-  // return redirect(`/job/${data.job_id}`);
+  const job = (await request.json()) as JobRequirements;
+  const data = await createJob(job);
+  return redirect(`/job/${data.job_id}`);
 }
 
 type BaseFormProps = {
@@ -21,7 +21,7 @@ type BaseFormProps = {
   setStartSeed: React.Dispatch<React.SetStateAction<number>>;
   endSeed: number;
   setEndSeed: React.Dispatch<React.SetStateAction<number>>;
-  handleSubmit: () => void;
+  onCreate: () => void;
 };
 function BaseForm(props: BaseFormProps) {
   return (
@@ -29,7 +29,7 @@ function BaseForm(props: BaseFormProps) {
       <div className="grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-6 sm:grid-rows-2 sm:gap-y-0">
         <div className="sm:col-span-3">
           <button
-            onClick={props.handleSubmit}
+            onClick={props.onCreate}
             className="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
           >
             Submit Job
@@ -74,6 +74,7 @@ function BaseForm(props: BaseFormProps) {
 
 export default function CreateView() {
   const setPageName = useOutletContext() as OutletContext;
+  const submit = useSubmit();
   const [legacyRng, setLegacyRng] = useState(false);
   const [startSeed, setStartSeed] = useState(0);
   const [endSeed, setEndSeed] = useState(100);
@@ -86,24 +87,46 @@ export default function CreateView() {
   const [itemQuestRequirements, setItemQuestRequirements] = useState<
     ItemQuestRequirement[]
   >([]);
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState<JobRequirements>();
 
-  const submit = useSubmit();
-  const handleSubmit = () => {
-    submit(
-      {
-        legacy_rng: legacyRng,
-        start_seed: startSeed,
-        end_seed: endSeed,
-        weather: weatherRequirements,
-        night_event: nightEventRequirements,
-        item_quest: itemQuestRequirements,
-      } as JobRequirements,
-      { method: "post", encType: "application/json" },
-    );
+  const handleOpen = () => {
+    setOpen(true);
   };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleAccept = (data) => {
+    submit(data, { method: "post", encType: "application/json" });
+  };
+
+  useEffect(() => {
+    setData({
+      legacy_rng: legacyRng,
+      start_seed: startSeed,
+      end_seed: endSeed,
+      weather: weatherRequirements,
+      night_event: nightEventRequirements,
+      item_quest: itemQuestRequirements,
+    });
+  }, [
+    legacyRng,
+    startSeed,
+    endSeed,
+    weatherRequirements,
+    nightEventRequirements,
+    itemQuestRequirements,
+  ]);
+
   useEffect(() => setPageName("Create Job"));
   return (
     <div>
+      <JobConfirmDialog
+        open={open}
+        onClose={handleClose}
+        onAccept={handleAccept}
+        data={data}
+      />
       <BaseForm
         {...{
           legacyRng,
@@ -112,7 +135,7 @@ export default function CreateView() {
           setStartSeed,
           endSeed,
           setEndSeed,
-          handleSubmit,
+          onCreate: handleOpen,
         }}
       />
       <TabGroup>
